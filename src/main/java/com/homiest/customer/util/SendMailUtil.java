@@ -1,5 +1,6 @@
 package com.homiest.customer.util;
 
+import java.security.GeneralSecurityException;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -11,63 +12,82 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.homiest.customer.util.FileUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.spi.LoggerFactory;
-  
+import com.sun.mail.util.MailSSLSocketFactory;
+
 public class SendMailUtil {
 	private static final Log logger =   LogFactory.getLog(SendMailUtil.class);
 	private static String host  = "";
-	static boolean auth = false;
+	static String auth = "";
 	static String contentType =  "text/html";
 	static String subject = "";
 	static String propFrom = "";
+	static String psw = "";
+
 	static {
-		host =FileUtil.readProperties("mail.properties", "mailhost");
-		auth = Boolean.parseBoolean(FileUtil.readProperties("mail.properties", "auth"));
-		contentType = FileUtil.readProperties("mail.properties", "contentType");
-		propFrom = FileUtil.readProperties("mail.properties", "from");
+		Properties propMail = FileUtil.loadProperties("mail.properties");
+		host = propMail.getProperty("mailhost");
+		contentType = propMail.getProperty("contentType");
+		auth = propMail.getProperty("auth");
+		psw = propMail.getProperty("psw");
+		host = propMail.getProperty("mailhost");
 	}
-	
+
 	public static void sendMail(String from,String to,String subject,String Content){
-		  try{
-			  if(from == null || from.isEmpty()) {
-				  from = propFrom;
-			  }
-			   Properties properties = System.getProperties();
-			      // �����ʼ�������
-		      properties.setProperty("mail.smtp.host", host);
-		      //properties.put("mail.smtp.auth", "true");
-		      // ��ȡĬ��session����
-		     Session session = Session.getDefaultInstance(properties,new Authenticator(){
-		          public PasswordAuthentication getPasswordAuthentication()
-		          {
-		           return new PasswordAuthentication("595436259@qq.com", "mwiwtwevxhlcbajc"); //�������ʼ��û���������
-		          }
-		         }); 
-	      	// ����Ĭ�ϵ� MimeMessage ����
-		      
-		      
-		      
-	         MimeMessage message = new MimeMessage(session);
-	         // Set From: ͷ��ͷ�ֶ�
-	         message.setFrom(new InternetAddress(from));
-	         // Set To: ͷ��ͷ�ֶ�
-	         message.addRecipient(Message.RecipientType.TO,
-	                                  new InternetAddress(to));
-	         // Set Subject: ͷ�ֶ�
-	         message.setSubject(subject);
-	         // ���� HTML ��Ϣ, ���Բ���html��ǩ
-	 
-	         message.setContent(Content,contentType);
-	         logger.error(contentType +" " +  host );
-	         // ������Ϣ
-	         Transport.send(message);
-	         logger.error("send successful");
-			  
-	   }catch (MessagingException mex) {
-	         mex.printStackTrace();
-	      }
+		try{
+			if(from == null || from.isEmpty()) {
+				from = auth;
+			}
+			Properties props = System.getProperties();
+
+			//使用SSL，企业邮箱必需！
+			//开启安全协议
+			MailSSLSocketFactory sf = null;
+			try {
+				sf = new MailSSLSocketFactory();
+				sf.setTrustAllHosts(true);
+			} catch (GeneralSecurityException e1) {
+				e1.printStackTrace();
+			}
+			props.put("mail.smtp.ssl.enable", "true");
+			props.put("mail.smtp.ssl.socketFactory", sf);
+			props.setProperty("mail.transport.protocol", "smtp");
+			props.setProperty("mail.smtp.port", "465");
+			props.setProperty("mail.smtp.host", host);
+			props.setProperty("mail.smtp.auth", "true");
+			// 获取默认session对象
+			Session session = Session.getDefaultInstance(props,new Authenticator(){
+				public PasswordAuthentication getPasswordAuthentication()
+				{
+					return new PasswordAuthentication(auth, psw); //发件人邮件用户名、密码
+				}
+			});
+
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.ssl.enable", "true");
+			props.put("mail.smtp.ssl.socketFactory", sf);
+			// 创建默认的 MimeMessage 对象。
+			MimeMessage message = new MimeMessage(session);
+			// Set From: 头部头字段
+			message.setFrom(new InternetAddress(from));
+			// Set To: 头部头字段
+			message.addRecipient(Message.RecipientType.TO,
+					new InternetAddress(to));
+			// Set Subject: 头字段
+			message.setSubject(subject);
+			// 发送 HTML 消息, 可以插入html标签
+			message.saveChanges();
+			message.setContent(Content,contentType);
+			// 发送消息
+			Transport.send(message);
+			logger.error("from " + from + "----to: " + to + "  --success！！ ");
+
+		}catch (MessagingException mex) {
+			logger.error("from " + from + "----to: " + to + "-- faild！！");
+			mex.printStackTrace();
+		}
 	}
- 
+
 }

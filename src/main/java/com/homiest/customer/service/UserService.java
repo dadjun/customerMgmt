@@ -1,4 +1,4 @@
-package com.homiest.customer.service.user;
+package com.homiest.customer.service;
 import com.github.pagehelper.PageInfo;
 import com.homiest.customer.model.UserDomain;
 
