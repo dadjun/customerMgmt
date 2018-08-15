@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.customer.service.CustomerService;
+import com.customer.util.SendMailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,8 +36,10 @@ public class EmailController {
         String sender = obj.getString("sender");
         JSONArray list = obj.getJSONArray("list");
 
+        boolean bSuccess =  SendMailUtil.sendMail("zhangjunjie@hylink.net.cn","595436259@qq.com","idea","abc");
+
         System.out.print(sender);
-        return jsonData;
+        return bSuccess;
 
     }
 }

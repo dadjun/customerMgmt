@@ -34,7 +34,7 @@ public class SendMailUtil {
 		host = propMail.getProperty("mailhost");
 	}
 
-	public static void sendMail(String from,String to,String subject,String Content){
+	public static boolean sendMail(String from,String to,String subject,String Content){
 		try{
 			if(from == null || from.isEmpty()) {
 				from = auth;
@@ -82,11 +82,12 @@ public class SendMailUtil {
 			// 发送消息
 			Transport.send(message);
 			logger.error("from " + from + "----to: " + to + "  --success！！ ");
-
+			return true;
 		}catch (MessagingException mex) {
 			logger.error("from " + from + "----to: " + to + "-- faild！！");
 			mex.printStackTrace();
 		}
+		return false;
 	}
 
 }
