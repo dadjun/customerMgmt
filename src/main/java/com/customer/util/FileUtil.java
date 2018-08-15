@@ -1,4 +1,4 @@
-package com.homiest.customer.util;
+package com.customer.util;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

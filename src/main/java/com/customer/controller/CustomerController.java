@@ -1,34 +1,37 @@
-package com.homiest.customer.controller;
+package com.customer.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.homiest.customer.service.UserService;
-import com.homiest.customer.model.UserDomain;
+import com.customer.service.CustomerService;
+import com.customer.model.CustomerBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Created by Administrator on 2017/8/16.
  */
 @Controller
-@RequestMapping(value = "/usr")
-public class UserController {
+@RequestMapping(value = "/customer")
+public class CustomerController {
 
     @Autowired
-    private UserService userService;
+    private CustomerService customerService;
 
     @ResponseBody
     @PostMapping("/add")
-    public int addUser(UserDomain user){
-        return userService.addUser(user);
+    public int addUser(CustomerBean customer){
+        return customerService.addCustomer(customer);
     }
 
     @ResponseBody
    // @GetMapping("/selectCustomers")
    // @CrossOrigin(origins = {"http://localhost:8081", "null"})
-    @PostMapping("/selectUsrs")
-    public Object findAllUser(
+    @PostMapping("/selectCustomers")
+    public Object findAllCustomers(
             @RequestParam(name = "jsonData", required = false)
                     Object jsonData,
             @RequestParam(name = "pageNum", required = false, defaultValue = "1")
@@ -39,6 +42,6 @@ public class UserController {
     JSONObject obj   =  JSON.parseObject((String)jsonData);
 
         pageNum = obj.getInteger("pageNum");
-        return userService.findAllUser(pageNum,pageSize);
+        return customerService.findAllCustomers(pageNum,pageSize);
     }
 }

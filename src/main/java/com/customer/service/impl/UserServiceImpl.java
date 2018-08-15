@@ -1,13 +1,10 @@
-package com.homiest.customer.service.impl;
+package com.customer.service.impl;
 
+import com.customer.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.homiest.customer.dao.CustomerDao;
-import com.homiest.customer.dao.UserDao;
-import com.homiest.customer.model.CustomerBean;
-import com.homiest.customer.model.UserDomain;
-import com.homiest.customer.service.CustomerService;
-import com.homiest.customer.service.UserService;
+import com.customer.dao.UserDao;
+import com.customer.model.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +14,15 @@ import java.util.List;
  * Created by Administrator on 2017/8/16.
  */
 @Service(value = "userService")
-public class CustomerServiceImpl implements CustomerService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
-    private CustomerDao customerDao;//这里会报错，但是并不会影响
+    private UserDao userDao;//这里会报错，但是并不会影响
 
     @Override
-    public int addUser(CustomerBean user) {
+    public int addUser(UserBean user) {
 
-        return customerDao.insert(user);
+        return userDao.insert(user);
     }
 
     /*
@@ -35,11 +32,17 @@ public class CustomerServiceImpl implements CustomerService {
      * pageSize 每页显示的数据条数
      * */
     @Override
-    public PageInfo<CustomerBean> findAllUser(int pageNum, int pageSize) {
+    public PageInfo<UserBean> findAllUser(int pageNum, int pageSize) {
         //将参数传给这个方法就可以实现物理分页了，非常简单。
         PageHelper.startPage(pageNum, pageSize);
-        List<CustomerBean> userDomains = customerDao.selectUsers();
-        PageInfo result = new PageInfo(userDomains);
+        List<UserBean> userBeans = userDao.selectUsers();
+        PageInfo result = new PageInfo(userBeans);
         return result;
+    }
+
+    @Override
+    public UserBean findUser(String name) {
+         UserBean userBean = userDao.selectUser(name);
+        return userBean;
     }
 }

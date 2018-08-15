@@ -1,4 +1,4 @@
-package com.homiest.customer.model;
+package com.customer.model;
 
 public class CustomerBean {
     public Integer getId() {

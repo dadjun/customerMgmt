@@ -1,15 +1,10 @@
-package com.homiest.customer.service.impl;
+package com.customer.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.homiest.customer.dao.UserDao;
-import com.homiest.customer.model.UserDomain;
-import com.homiest.customer.service.EmailService;
-import com.homiest.customer.service.UserService;
+import com.customer.service.EmailService;
+import com.customer.dao.UserDao;
+import com.customer.model.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/16.
@@ -21,7 +16,7 @@ public class EmailServiceImpl implements EmailService {
     private UserDao userDao;//这里会报错，但是并不会影响
 
     @Override
-    public int sendEmail(UserDomain user) {
+    public int sendEmail(UserBean user) {
 
         return userDao.insert(user);
     }

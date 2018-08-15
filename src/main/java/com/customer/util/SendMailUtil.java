@@ -1,4 +1,4 @@
-package com.homiest.customer.util;
+package com.customer.util;
 
 import java.security.GeneralSecurityException;
 import java.util.Properties;
@@ -12,7 +12,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.homiest.customer.util.FileUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.sun.mail.util.MailSSLSocketFactory;

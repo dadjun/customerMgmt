@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.homiest.customer.dao.UserDao" >
+<mapper namespace="com.customer.dao.CustomerDao" >
     <sql id="BASE_TABLE">
     customer
   </sql>
@@ -9,7 +9,7 @@
    ID,NAME,EMAIL,COUNTRY,CUSTOMERTYPE
   </sql>
 
-    <insert id="insert" parameterType="com.homiest.customer.model.UserDomain">
+    <insert id="insert" parameterType="com.customer.model.CustomerBean">
         INSERT INTO
         <include refid="BASE_TABLE"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -27,7 +27,7 @@
         </trim>
     </insert>
 
-    <select id="selectUsers" resultType="com.homiest.customer.model.UserDomain">
+    <select id="selectCustomers" resultType="com.customer.model.CustomerBean">
         SELECT
         <include refid="BASE_COLUMN"/>
         FROM
