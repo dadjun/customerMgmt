@@ -6,7 +6,7 @@
   </sql>
 
     <sql id="BASE_COLUMN">
-   ID,NAME,EMAIL,MAILHOST,PSW
+   ID,NAME,EMAIL,MAILHOST,PSW,MAILPSW
   </sql>
 
     <insert id="insert" parameterType="com.customer.model.UserBean">
@@ -17,6 +17,9 @@
             <if test="mailHost != null">
                 mailHost,
             </if>
+            <if test="mailPsw != null">
+                mailPsw,
+            </if>
         </trim>
         <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
             #{name, jdbcType=VARCHAR},
@@ -24,6 +27,9 @@
             #{psw, jdbcType=VARCHAR},
             <if test="mailHost != null">
                 #{mailHost , jdbcType=VARCHAR},
+            </if>
+            <if test="mailPsw != null">
+                #{mailPsw , jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>

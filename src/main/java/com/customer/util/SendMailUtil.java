@@ -12,6 +12,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.customer.model.UserBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -26,14 +27,19 @@ public class SendMailUtil {
 	static String psw = "";
 
 	static {
-		Properties propMail = FileUtil.loadProperties("mail.properties");
-		host = propMail.getProperty("mailhost");
+		/*Properties propMail = FileUtil.loadProperties("mail.properties");
 		contentType = propMail.getProperty("contentType");
 		auth = propMail.getProperty("auth");
 		psw = propMail.getProperty("psw");
-		host = propMail.getProperty("mailhost");
+		host = propMail.getProperty("mailhost");*/
 	}
 
+	public static void setSenderParam(UserBean user,String myContentType){
+		host = user.getMailHost();
+		psw = user.getMailPsw();
+		auth = user.getEmail();
+		contentType =myContentType;
+	}
 	public static boolean sendMail(String from,String to,String subject,String Content){
 		try{
 			if(from == null || from.isEmpty()) {
