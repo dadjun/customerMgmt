@@ -10,6 +10,8 @@ import com.customer.util.DataWraped;
 import com.customer.util.ExceptionCode;
 import com.customer.util.FileUtil;
 import com.customer.util.SendMailUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ import java.io.IOException;
 @RequestMapping(value="/email")
 public class EmailController {
 
+    Logger logger = LoggerFactory.getLogger(EmailController.class);
     @Autowired
     private CustomerService customerService;
 
@@ -45,14 +48,20 @@ public class EmailController {
         DataWraped dataResult = new DataWraped();
         JSONObject obj   =  JSON.parseObject((String)jsonData);
         String sender = obj.getString("sender");
-        JSONArray list = obj.getJSONArray("list");
+        JSONArray customerList = obj.getJSONArray("list");
         String subject = obj.getString("subject");
         try {
         UserBean userBean = userService.findUser(sender);
         boolean bSuccess = false;
-        if (userBean != null) {
-            SendMailUtil.setSenderParam(userBean,"text/html");
-            bSuccess =  SendMailUtil.sendMail(userBean.getEmail(),"595436259@qq.com",subject,"abc");
+        if (userBean != null && customerList.size() >0) {
+            String content =  FileUtil.readMailContent(userBean.getContentPath());
+            for (int j= 0;j<customerList.size();j++) {
+                JSONObject customerObj = customerList.getJSONObject(j);
+                String csEmail = customerObj.getString("email");
+                logger.debug(csEmail);
+                SendMailUtil.setSenderParam(userBean, "text/html");
+                bSuccess = SendMailUtil.sendMail(userBean.getEmail(), "595436259@qq.com", "1", content);
+            }
         }
         if (!bSuccess) {
             dataResult.setResultCode(ExceptionCode.ResultCode.OP_ERROR);
@@ -64,9 +73,8 @@ public class EmailController {
         return dataResult;
     }
     //JSON形式返回给结果
-    @ResponseBody
     //文件只能用POST方式进行传递
-    //@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    @ResponseBody
     @PostMapping("/uploadFile")
     public Object filesUpload(HttpServletRequest request, HttpServletResponse response,
                             @RequestParam("file") MultipartFile file,
