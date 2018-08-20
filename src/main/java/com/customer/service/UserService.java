@@ -12,4 +12,5 @@ public interface UserService {
     PageInfo<UserBean> findAllUser(int pageNum, int pageSize);
 
     UserBean findUser(String name);
+    int updateUser(UserBean name);
 }

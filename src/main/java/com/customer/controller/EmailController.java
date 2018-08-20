@@ -42,39 +42,36 @@ public class EmailController {
         //发送
         // 改变数据库状态
         // 返回结果
-
+        DataWraped dataResult = new DataWraped();
         JSONObject obj   =  JSON.parseObject((String)jsonData);
         String sender = obj.getString("sender");
         JSONArray list = obj.getJSONArray("list");
+        String subject = obj.getString("subject");
+        try {
         UserBean userBean = userService.findUser(sender);
         boolean bSuccess = false;
         if (userBean != null) {
             SendMailUtil.setSenderParam(userBean,"text/html");
-            bSuccess =  SendMailUtil.sendMail("zhangjunjie@hylink.net.cn","595436259@qq.com","idea","abc");
+            bSuccess =  SendMailUtil.sendMail(userBean.getEmail(),"595436259@qq.com",subject,"abc");
+        }
+        if (!bSuccess) {
+            dataResult.setResultCode(ExceptionCode.ResultCode.OP_ERROR);
         }
         System.out.print(sender);
-        return bSuccess;
-
-    }
-
-/*    @ResponseBody
-    @PostMapping("/uploadFile")
-    Object uploadFile(
-            @RequestParam(name = "jsonData", required = false)
-                    String jsonData
-    ){
-        List<FileItem> *//* FileItem *//*items = upload.parseRequest(request);
-        DataWraped dataResult = new DataWraped();
+        }catch (Exception e){
+            dataResult.setResultCode(ExceptionCode.ResultCode.INNER_ERROR);
+        }
         return dataResult;
-    }*/
-
+    }
     //JSON形式返回给结果
     @ResponseBody
     //文件只能用POST方式进行传递
     //@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     @PostMapping("/uploadFile")
     public Object filesUpload(HttpServletRequest request, HttpServletResponse response,
-                            @RequestParam("file") MultipartFile file/* @RequestParam("user_name") String user_name,*/
+                            @RequestParam("file") MultipartFile file,
+                              @RequestParam(name = "csName", required = false)
+                                          String userName
                          /*   @RequestParam("user_id") String user_id, @RequestParam("region_name") String region_name,
                             @RequestParam("region_id") Float region_id*/) {
        //设置返回信息的编码格式及类型
@@ -96,19 +93,24 @@ public class EmailController {
                // ConfigUtil configUtil = new ConfigUtil();
                 String curDir =System.getProperty("user.dir");
                 System.out.print(curDir);
-                String FilePath =  "E:"+ File.separator + filename;
-                File dir = new File(FilePath);
+                String filePath = curDir + File.separator + filename;
+                File dir = new File(filePath);
               /*  if (!dir.exists()) {
                     dir.mkdirs();
-                }
-*/
+                }*/
+                UserBean userBean = new UserBean();
+                userBean.setName(userName);
+                userBean.setContentPath(filePath);
+                int xx= userService.updateUser(userBean);
+
                 // 转存文件，否则所创建的是个文件夹
-                file.transferTo(new File(FilePath));
+                file.transferTo(new File(filePath));
                 // 获取需要处理的文件
                 resultJson.put("data", "成功");
                 dataResult.setResultCode(ExceptionCode.ResultCode.NO_ERROR);
 
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("文件转存失败");
                 dataResult.setResultCode(ExceptionCode.ResultCode.INNER_ERROR);
             }

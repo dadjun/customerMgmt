@@ -45,4 +45,9 @@ public class UserServiceImpl implements UserService {
          UserBean userBean = userDao.selectUser(name);
         return userBean;
     }
+
+    public int updateUser(UserBean name) {
+    return  userDao.updateUser(name);
+
+    }
 }

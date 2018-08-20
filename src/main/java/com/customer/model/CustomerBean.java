@@ -1,5 +1,7 @@
 package com.customer.model;
 
+import java.util.Date;
+
 public class CustomerBean {
     public Integer getId() {
         return id;
@@ -49,6 +51,16 @@ public class CustomerBean {
     }
 
     private String customerType;
+
+    public Date getLastSendDate() {
+        return lastSendDate;
+    }
+
+    public void setLastSendDate(Date lastSendDate) {
+        this.lastSendDate = lastSendDate;
+    }
+
+    private Date lastSendDate;
 
     // get,set方法略...
 }

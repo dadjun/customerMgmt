@@ -6,7 +6,7 @@
   </sql>
 
     <sql id="BASE_COLUMN">
-   ID,NAME,EMAIL,COUNTRY,CUSTOMERTYPE
+   ID,NAME,EMAIL,COUNTRY,CUSTOMERTYPE,LASTSENDDATE
   </sql>
 
     <insert id="insert" parameterType="com.customer.model.CustomerBean">

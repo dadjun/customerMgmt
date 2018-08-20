@@ -13,4 +13,5 @@ public interface UserDao {
     List<UserBean> selectUsers();
 
     UserBean selectUser(String name);
+    int updateUser(UserBean name);
 }

@@ -52,10 +52,19 @@ public class UserBean {
         this.psw = psw;
     }
 
+    public String getContentPath() {
+        return contentPath;
+    }
+
+    public void setContentPath(String contentPath) {
+        this.contentPath = contentPath;
+    }
+
+
     private String name;
     private String email;
     private String mailHost;
     private String mailPsw;
     private String psw;
-
+    private String contentPath;
 }

@@ -42,6 +42,7 @@ public class CustomerController {
     JSONObject obj   =  JSON.parseObject((String)jsonData);
 
         pageNum = obj.getInteger("pageNum");
+        pageSize = obj.getInteger("pageSize");
         return customerService.findAllCustomers(pageNum,pageSize);
     }
 }

@@ -93,6 +93,7 @@ public class UserController {
                 dataResult.setResultMsg("账户名不存在");
             }else if (userBean.getPsw().equals(psw)){
                 dataResult.setResultMsg("登录成功");
+                dataResult.setData(userBean.getEmail());
                 dataResult.setResultCode(ExceptionCode.ResultCode.NO_ERROR);
             } else {
                 dataResult.setResultMsg("密码错误，请重新输入");
