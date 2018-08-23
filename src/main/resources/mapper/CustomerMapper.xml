@@ -33,6 +33,15 @@
         FROM
         <include refid="BASE_TABLE"/>
     </select>
-
+    <update id="updateCustomer" parameterType="com.customer.model.CustomerBean">
+        UPDATE
+        customer
+        <set>
+            <if test="lastSendDate!= null">
+                lastSendDate=#{lastSendDate}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
 
 </mapper>

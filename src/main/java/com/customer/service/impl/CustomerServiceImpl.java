@@ -39,4 +39,9 @@ public class CustomerServiceImpl implements CustomerService {
         PageInfo result = new PageInfo(userDomains);
         return result;
     }
+    @Override
+    public  int  updateCustomer(CustomerBean customer){
+        return  customerDao.updateCustomer(customer);
+    }
+
 }

@@ -51,7 +51,6 @@
 
     <update id="updateUser" parameterType="com.customer.model.UserBean">
         UPDATE
-
         USER
         <set>
            <if test="contentPath!= null">

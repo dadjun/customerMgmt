@@ -3,6 +3,7 @@ package com.customer.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.customer.model.CustomerBean;
 import com.customer.model.UserBean;
 import com.customer.service.CustomerService;
 import com.customer.service.UserService;
@@ -21,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value="/email")
@@ -49,18 +52,20 @@ public class EmailController {
         JSONObject obj   =  JSON.parseObject((String)jsonData);
         String sender = obj.getString("sender");
         JSONArray customerList = obj.getJSONArray("list");
+
         String subject = obj.getString("subject");
         try {
         UserBean userBean = userService.findUser(sender);
         boolean bSuccess = false;
         if (userBean != null && customerList.size() >0) {
             String content =  FileUtil.readMailContent(userBean.getContentPath());
-            for (int j= 0;j<customerList.size();j++) {
-                JSONObject customerObj = customerList.getJSONObject(j);
-                String csEmail = customerObj.getString("email");
-                logger.debug(csEmail);
+            List<CustomerBean> customerBeans = JSONObject.parseArray(customerList.toJSONString(), CustomerBean.class);
+            for ( CustomerBean customerBean: customerBeans) {
+                logger.debug(customerBean.getEmail());
                 SendMailUtil.setSenderParam(userBean, "text/html");
-                bSuccess = SendMailUtil.sendMail(userBean.getEmail(), "595436259@qq.com", "1", content);
+                bSuccess = SendMailUtil.sendMail(userBean.getEmail(), customerBean.getEmail(), "1", content);
+                customerBean.setLastSendDate(new Date());
+                customerService.updateCustomer(customerBean);
             }
         }
         if (!bSuccess) {

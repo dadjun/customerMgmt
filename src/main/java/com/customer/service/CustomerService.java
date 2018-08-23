@@ -10,4 +10,6 @@ public interface CustomerService {
     int addCustomer(CustomerBean user);
 
     PageInfo<CustomerBean> findAllCustomers(int pageNum, int pageSize);
+
+   int  updateCustomer(CustomerBean user);
 }

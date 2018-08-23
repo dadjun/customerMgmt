@@ -13,5 +13,5 @@ public interface CustomerDao {
 
     List<CustomerBean> selectCustomers();
 
-
+    int updateCustomer(CustomerBean customerBean);
 }
