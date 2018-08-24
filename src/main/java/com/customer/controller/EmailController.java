@@ -51,22 +51,29 @@ public class EmailController {
         DataWraped dataResult = new DataWraped();
         JSONObject obj   =  JSON.parseObject((String)jsonData);
         String sender = obj.getString("sender");
-        JSONArray customerList = obj.getJSONArray("list");
+        //JSONArray customerList = obj.getJSONArray("list");
+        CustomerBean customerBean = obj.getObject("list",CustomerBean.class);
 
         String subject = obj.getString("subject");
         try {
         UserBean userBean = userService.findUser(sender);
         boolean bSuccess = false;
-        if (userBean != null && customerList.size() >0) {
+        if (userBean != null && customerBean != null) {
             String content =  FileUtil.readMailContent(userBean.getContentPath());
-            List<CustomerBean> customerBeans = JSONObject.parseArray(customerList.toJSONString(), CustomerBean.class);
-            for ( CustomerBean customerBean: customerBeans) {
+           // List<CustomerBean> customerBeans = JSONObject.parseArray(customerList.toJSONString(), CustomerBean.class);
+           // for ( CustomerBean customerBean: customerBeans) {
                 logger.debug(customerBean.getEmail());
                 SendMailUtil.setSenderParam(userBean, "text/html");
-                bSuccess = SendMailUtil.sendMail(userBean.getEmail(), customerBean.getEmail(), "1", content);
-                customerBean.setLastSendDate(new Date());
-                customerService.updateCustomer(customerBean);
-            }
+                bSuccess = SendMailUtil.sendMail(userBean.getEmail(), customerBean.getEmail(), subject, content);
+                JSONObject resultObj = new JSONObject();
+                if (bSuccess) {
+                    customerBean.setLastSendDate(new Date());
+                    customerService.updateCustomer(customerBean);
+                    resultObj.put("id",customerBean.getId());
+                    resultObj.put("status",bSuccess);
+                    dataResult.setData(resultObj);
+                }
+            //}
         }
         if (!bSuccess) {
             dataResult.setResultCode(ExceptionCode.ResultCode.OP_ERROR);

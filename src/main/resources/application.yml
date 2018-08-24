@@ -1,6 +1,9 @@
 server:
   port: 8080
-
+  #ssl.key-store: E://tomcat.keystore
+  #ssl.key-store-password: junjie316gO
+ # ssl.keyStoreType: PKCS12
+  #server.ssl.keyAlias: tomcat
 
 spring:
     datasource:
