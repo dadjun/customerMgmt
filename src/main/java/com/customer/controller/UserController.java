@@ -71,7 +71,16 @@ public class UserController {
             ;
             userBean.setName(user);
             userBean.setMailPsw(mailPsw);
-            userBean.setMailHost("smtp.exmail.qq.com");
+            String mailHost = "smtp.exmail.qq.com";
+            if(email.contains("163")) {
+                mailHost="smtp.163.com";
+            } else if(email.contains("qq")) {
+                mailHost="smtp.qq.com";
+            }
+            else if(email.contains("126")) {
+                mailHost="smtp.126.com";
+            }
+            userBean.setMailHost(mailHost);
             UserBean existUser = userService.findUser(user);
             if (existUser != null && user.equals(existUser.getName())) {
                 dataResult.setResultMsg("该用户名已存在");
@@ -115,6 +124,33 @@ public class UserController {
         }
         return dataResult;
     }
+    @ResponseBody
+    @PostMapping("/getInfo")
+    public Object getUserInfo(@RequestParam(name = "jsonData", required = false)
+                                Object jsonData) {
+        JSONObject obj = JSON.parseObject((String) jsonData);
+
+        String user = obj.getString("user");
+        //String psw = obj.getString("password");
+        DataWraped dataResult = new DataWraped();
+        try {
+            UserBean userBean = userService.findUser(user);
+            if (userBean == null )  {
+                dataResult.setResultCode(ExceptionCode.ResultCode.INNER_ERROR);
+                dataResult.setResultMsg("账户名不存在");
+            }else {
+                dataResult.setResultMsg("获取成功");
+                dataResult.setData(userBean);
+                dataResult.setResultCode(ExceptionCode.ResultCode.NO_ERROR);
+            }
+        } catch (Exception ex) {
+            dataResult.setResultMsg(ex.getMessage().toString());
+            dataResult.setResultCode(ExceptionCode.ResultCode.INNER_ERROR);
+        }
+        return dataResult;
+    }
+
+
 
     //JSON形式返回给结果
     //文件只能用POST方式进行传递
@@ -150,7 +186,7 @@ public class UserController {
                 userBean.setContentPath(filePath);
                 int xx = userService.updateUser(userBean);
                 if(filePath != null) {
-                    filePath = filePath.substring( userBean.getContentPath().lastIndexOf("\\")+1);
+                    //filePath = filePath.substring( userBean.getContentPath().lastIndexOf("\\")+1);
                     userBean.setContentPath(filename);
                     dataResult.setData(userBean);
                 }
