@@ -32,13 +32,21 @@ public class CustomerServiceImpl implements CustomerService {
      * pageSize 每页显示的数据条数
      * */
     @Override
-    public PageInfo<CustomerBean> findAllCustomers(int pageNum, int pageSize) {
+    public PageInfo<CustomerBean> findAllCustomers(int pageNum, int pageSize,CustomerBean customer) {
         //将参数传给这个方法就可以实现物理分页了，非常简单。
         PageHelper.startPage(pageNum, pageSize);
-        List<CustomerBean> userDomains = customerDao.selectCustomers();
+        List<CustomerBean> userDomains = customerDao.selectCustomers(customer);
         PageInfo result = new PageInfo(userDomains);
         return result;
     }
+
+    @Override
+    public List<String> selectCustomerCountry(){
+        List<String> countryList = customerDao.selectCustomerCountry();
+        countryList.set(0,"");
+        return countryList;
+    }
+
     @Override
     public  int  updateCustomer(CustomerBean customer){
         return  customerDao.updateCustomer(customer);

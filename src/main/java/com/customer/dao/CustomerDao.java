@@ -11,7 +11,9 @@ public interface CustomerDao {
 
 
 
-    List<CustomerBean> selectCustomers();
+    List<CustomerBean> selectCustomers(CustomerBean customerBean);
 
     int updateCustomer(CustomerBean customerBean);
+
+    List<String> selectCustomerCountry();
 }

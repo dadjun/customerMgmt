@@ -9,6 +9,10 @@
    ID,NAME,EMAIL,COUNTRY,CUSTOMERTYPE,LASTSENDDATE
   </sql>
 
+    <resultMap id="countryResult" type="java.lang.String" >
+        <result column="student_id" property="country" jdbcType="VARCHAR" />
+    </resultMap>
+
     <insert id="insert" parameterType="com.customer.model.CustomerBean">
         INSERT INTO
         <include refid="BASE_TABLE"/>
@@ -21,18 +25,42 @@
         <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
             #{Name, jdbcType=VARCHAR},
             #{Email, jdbcType=VARCHAR},
-            <if test="phone != null">
-                #{Country , jdbcType=VARCHAR},
+            <if test="country != null">
+                #{country , jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
 
-    <select id="selectCustomers" resultType="com.customer.model.CustomerBean">
+    <select id="selectCustomers" parameterType="com.customer.model.CustomerBean" resultType="com.customer.model.CustomerBean">
         SELECT
         <include refid="BASE_COLUMN"/>
         FROM
         <include refid="BASE_TABLE"/>
+        <where>
+        <if test="country != null">
+            AND
+            COUNTRY =  #{country , jdbcType=VARCHAR}
+        </if>
+        <if test="email != null">
+           AND EMAIL LIKE CONCAT('%',#{email},'%')
+        </if>
+        </where>
+
+        ORDER BY Country
+
+
     </select>
+
+    <select id="selectCustomerCountry" resultType="java.lang.String">
+        SELECT
+         Country
+        FROM
+        <include refid="BASE_TABLE"/>
+
+        GROUP BY Country
+
+    </select>
+
     <update id="updateCustomer" parameterType="com.customer.model.CustomerBean">
         UPDATE
         customer

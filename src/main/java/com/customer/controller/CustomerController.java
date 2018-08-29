@@ -33,16 +33,32 @@ public class CustomerController {
     @PostMapping("/selectCustomers")
     public Object findAllCustomers(
             @RequestParam(name = "jsonData", required = false)
+                    Object jsonData  ){
+
+    JSONObject obj   =  JSON.parseObject((String)jsonData);
+
+       Integer  pageNum = obj.getInteger("pageNum");
+        Integer pageSize = obj.getInteger("pageSize");
+        String country = obj.getString("country");
+        String email = obj.getString("email");
+        CustomerBean customer = new CustomerBean();
+        customer.setCountry(country);;
+        customer.setEmail(email);
+        return customerService.findAllCustomers(pageNum,pageSize,customer);
+    }
+
+    @ResponseBody
+    @PostMapping("/selectCountryList")
+    public Object selectCountryList(
+            @RequestParam(name = "jsonData", required = false)
                     Object jsonData,
             @RequestParam(name = "pageNum", required = false, defaultValue = "1")
                     int pageNum,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10")
                     int pageSize){
 
-    JSONObject obj   =  JSON.parseObject((String)jsonData);
-
-        pageNum = obj.getInteger("pageNum");
-        pageSize = obj.getInteger("pageSize");
-        return customerService.findAllCustomers(pageNum,pageSize);
+        return customerService.selectCustomerCountry();
     }
+
+
 }
