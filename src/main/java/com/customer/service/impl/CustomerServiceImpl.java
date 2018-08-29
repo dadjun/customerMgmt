@@ -43,6 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<String> selectCustomerCountry(){
         List<String> countryList = customerDao.selectCustomerCountry();
+        if (countryList.get(0) == null)
         countryList.set(0,"");
         return countryList;
     }
