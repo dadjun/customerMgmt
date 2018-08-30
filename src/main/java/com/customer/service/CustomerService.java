@@ -10,7 +10,7 @@ import java.util.List;
 public interface CustomerService {
 
     int addCustomer(CustomerBean user);
-
+    int deleteCustomer(CustomerBean customer);
     PageInfo<CustomerBean> findAllCustomers(int pageNum, int pageSize,CustomerBean customer);
 
    int  updateCustomer(CustomerBean user);

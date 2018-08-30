@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.customer.service.CustomerService;
 import com.customer.model.CustomerBean;
+import com.customer.util.DataWraped;
+import com.customer.util.ExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +37,7 @@ public class CustomerController {
             @RequestParam(name = "jsonData", required = false)
                     Object jsonData  ){
 
-    JSONObject obj   =  JSON.parseObject((String)jsonData);
+        JSONObject obj   =  JSON.parseObject((String)jsonData);
 
        Integer  pageNum = obj.getInteger("pageNum");
         Integer pageSize = obj.getInteger("pageSize");
@@ -60,5 +62,24 @@ public class CustomerController {
         return customerService.selectCustomerCountry();
     }
 
-
+    @ResponseBody
+    @PostMapping("/deleteCustomer")
+    public Object deleteCustomer(@RequestParam(name = "jsonData", required = false)
+                                        Object jsonData){
+        DataWraped result  = new DataWraped();
+        try {
+            JSONObject obj   =  JSON.parseObject((String)jsonData);
+            String name = obj.getString("name");
+            int id = obj.getInteger("id");
+            CustomerBean customer = new CustomerBean();
+            customer.setName(name);
+            customer.setId(id);
+            int delete = customerService.deleteCustomer(customer);
+        result.setData(delete);
+        }catch (Exception ex) {
+            result.setResultCode(ExceptionCode.ResultCode.INNER_ERROR);
+            result.setResultMsg(ex.getMessage());
+        }
+        return result;
+    }
 }

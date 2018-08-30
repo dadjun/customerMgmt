@@ -22,8 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Controller
 @RequestMapping(value="/email")
@@ -67,7 +69,12 @@ public class EmailController {
                 bSuccess = SendMailUtil.sendMail(userBean.getEmail(), customerBean.getEmail(), subject, content);
                 JSONObject resultObj = new JSONObject();
                 if (bSuccess) {
-                    customerBean.setLastSendDate(new Date());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    TimeZone timeZoneSH = TimeZone.getTimeZone("Asia/Shanghai");
+                    dateFormat.setTimeZone(timeZoneSH);
+
+                    Date date = dateFormat.parse(dateFormat.format(new Date()).toString());
+                    customerBean.setLastSendDate(date);
                     customerService.updateCustomer(customerBean);
                     resultObj.put("id",customerBean.getId());
                     resultObj.put("status",bSuccess);

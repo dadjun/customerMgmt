@@ -71,5 +71,15 @@
         </set>
         WHERE id = #{id}
     </update>
+    <delete id="delete" parameterType="com.customer.model.CustomerBean">
+        DELETE FROM
+        customer
+        <where>
+            <if test="id!= null">
+                id = #{id}
+            </if>
+        </where>
+    </delete>
+
 
 </mapper>

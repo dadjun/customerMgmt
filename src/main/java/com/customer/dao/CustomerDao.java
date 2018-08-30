@@ -8,7 +8,7 @@ public interface CustomerDao {
 
 
     int insert(CustomerBean record);
-
+    int delete(CustomerBean record);
 
 
     List<CustomerBean> selectCustomers(CustomerBean customerBean);
