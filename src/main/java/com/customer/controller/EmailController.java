@@ -72,12 +72,13 @@ public class EmailController {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     TimeZone timeZoneSH = TimeZone.getTimeZone("Asia/Shanghai");
                     dateFormat.setTimeZone(timeZoneSH);
-
-                    Date date = dateFormat.parse(dateFormat.format(new Date()).toString());
+                    String sendDate = dateFormat.format(new Date());
+                    Date date = dateFormat.parse(sendDate);
                     customerBean.setLastSendDate(date);
                     customerService.updateCustomer(customerBean);
                     resultObj.put("id",customerBean.getId());
                     resultObj.put("status",bSuccess);
+                    resultObj.put("lastSendDate",sendDate);
                     dataResult.setData(resultObj);
                 }
             //}
